@@ -9,7 +9,7 @@ export class authService {
     private repository = new authRepository();
 
     async register  (user: User){
-        const exists =await this.repository.findByEmail(user.email);
+        const exists =await this.repository.findByEmail(user.correoInstitucional);
 
 
         if(exists){
@@ -18,27 +18,41 @@ export class authService {
         
 
         const hashedPassword = await hashPassword(user.password);
-        user.password = hashedPassword;
-        user.role = 'user';
 
-        const result = await this.repository.create(user);
+
+
+
+        const newUser: User = {
+             ...user,
+            password: hashedPassword,
+            role: "student",
+            activo: true,
+            createdAt: new Date(),
+            updatedAt: new Date()
+        };
+
+
+
+        user.password = hashedPassword;;
+
+        const result = await this.repository.create(newUser);
         
         const token = signToken({
             sub: result._id!.toString(),
-            email: result.email,
+            correoInstitucional: result.correoInstitucional,
             role: result.role
         });
         return {
             user:{
                 id: result._id,
-                name: result.name,  
-                email: result.email,
+                name: result.nombre,  
+                correoInstitucional: result.correoInstitucional,
                 role: result.role
                 
 
             },
             token,
-        }
+        };
     
     
     
@@ -46,7 +60,7 @@ export class authService {
 
 
 async login (data:any) {
-const user = await this.repository.findByEmail(data.email);
+const user = await this.repository.findByEmail(data.correoInstitucional);
 if(!user){
     throw new Error (' Credenciales invalidas');
 }
@@ -57,14 +71,14 @@ if (!isValidPassword){
 }
     const token = signToken({
             sub: user._id!.toString(),
-            email: user.email,
+            correoInstitucional: user.correoInstitucional,
             role: user.role
         });
         return {
             user:{
                 id: user._id,
-                name: user.name,  
-                email: user.email,
+                name: user.nombre,  
+                correoInstitucional: user.correoInstitucional,
                 role: user.role
                 
 

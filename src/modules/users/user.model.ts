@@ -2,13 +2,13 @@ import {ObjectId} from 'mongodb';
 
 export interface User {
     _id?: ObjectId;
-    nombres: string;
+    nombre: string;
     correoInstitucional: string;
     sede: string;
     programa: string;
     password: string;
     role: "student" | "admin" | "support";
-    active: boolean;
+    activo: boolean;
     createdAt: Date;
     updatedAt: Date;
 }

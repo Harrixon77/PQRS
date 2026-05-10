@@ -3,10 +3,12 @@ import { VerifyToken } from "../libs/jwt.js";
 
 
 export const authMiddleware = (
-    req: Request, 
+    req: any,
     res: Response,
      next: NextFunction
     ) => {
+
+        try{
 
         const authHeader = req.headers.authorization;
 
@@ -25,12 +27,14 @@ export const authMiddleware = (
 
             const payload = VerifyToken(token);
 
-        console.log(payload)
+        req.user = payload;
 
         next();
     
             
-    } //cath (error) {
-       // return res.status(401).json({
-          //  message: 'Token de autenticación inválido',
-      //
+    } catch (error) {
+     return res.status(401).json({
+            message: 'Token de autenticación inválido',
+     });
+    }
+};
