@@ -9,7 +9,7 @@ export class authService {
     private repository = new authRepository();
 
     async register  (user: User){
-        const exists =await this.repository.findByEmail(user.correoInstitucional);
+        const exists =await this.repository.findBycorreoInstitucional(user.correoInstitucional);
 
 
         if(exists){
@@ -31,9 +31,6 @@ export class authService {
             updatedAt: new Date()
         };
 
-
-
-        user.password = hashedPassword;;
 
         const result = await this.repository.create(newUser);
         
@@ -60,7 +57,7 @@ export class authService {
 
 
 async login (data:any) {
-const user = await this.repository.findByEmail(data.correoInstitucional);
+const user = await this.repository.findBycorreoInstitucional(data.correoInstitucional);
 if(!user){
     throw new Error (' Credenciales invalidas');
 }

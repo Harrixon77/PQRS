@@ -1,6 +1,5 @@
 import {type Request, type Response} from "express";
 import { CreatePqrsService } from "./pqrs.services.js";
-import { ca, da } from "zod/locales";
 import { GetAllPqrsService } from "./pqrs.services.js";
 import { GetPqrsByIdService } from "./pqrs.services.js";
 import { UpdatePqrsService } from "./pqrs.services.js";
@@ -9,29 +8,58 @@ import { DisablePqrsService } from "./pqrs.services.js";
 
 export const CreatePqrsController = async (
 
-    req :Request,
+    
+    req :any,
     res: Response
+
+        
 )=> {
 
     try {
-
-
-
-        const response = await CreatePqrsService(req.body);
-
-        res.status(201).json({
-            message : "PQRS creada exitosamente",
-            data: response 
+        const user = (req as any).user;
         
+        const result = await CreatePqrsService(req.body, user);
+        return res.status(201).json({
+            message : "PQRS creada exitosamente",
+            data: result
         });
     }catch (error:  any) {
         res.status(400).json({
             message : "Error al crear PQRS",
             error : error.message
         });
-    } 
-}
+    }
 
+           /* else {
+
+                if(!req.body.correoAnonimo){
+                    return res.status(400).json({
+                        message: "Correo anonimo es requerido para PQRS anonimas"   
+                    
+
+                    });
+                }
+                pqrs.correoAnonimo = req.body.correoAnonimo;
+                pqrs.creadoPor = "anonimo";
+
+            }
+
+        const response = await CreatePqrsService(pqrs);
+
+        return res.status(201).json({
+            message : "PQRS creada exitosamente",
+            data: response 
+    
+        });
+        
+    } catch (error:  any) {
+        res.status(400).json({
+            message : "Error al crear PQRS",
+            error : error.message
+        });
+    } */
+}
+    
 
 
 export const GetAllPqrsController = async (

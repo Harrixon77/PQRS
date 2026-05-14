@@ -7,8 +7,10 @@ import { DisablePqrs } from "./pqrs.repository.js";
 
 
 
-export const CreatePqrsService = async (data: any) => {
+export const CreatePqrsService = async (data: any, user: any) => {
     console.log(data.correoInstitucional);
+
+
     const CategoriaValida = [
         "peticion",
         "queja",
@@ -21,21 +23,35 @@ export const CreatePqrsService = async (data: any) => {
         throw new Error("Tipo de PQRS no valido");
     }
 
-    if (!data.correoinstitucional.endsWith("@itc.edu.co")) {
-        throw new Error("Correo institucional no valido");
-    }
-
-    const NuevaPqrs = {
+    const NuevaPqrs : any ={
         titulo : data.titulo,
         descripcion : data.descripcion,
-        tipo : data.tipo,
-        correoinstitucional : data.correoinstitucional,
-        anonimo : data.anonimo || false,
+        tipo : data.tipo.toLowerCase(),
+        correoInstitucional : data.correoInstitucional,
         estado : "pendiente",
         activo: true,
         createdAt : new Date(),
 
     };
+
+    if (user) {
+
+        NuevaPqrs.usuarioId = user.sub;
+        NuevaPqrs.correoInstitucional = user.correoInstitucional;
+        NuevaPqrs.creadoPor = "auth";
+        NuevaPqrs.anonimo = false;
+    } else {
+
+        if (!data.correoAnonimo) {
+            throw new Error("Correo anonimo es requerido para PQRS anonimas");
+        }
+
+        NuevaPqrs.correoAnonimo = data.correoAnonimo;
+        NuevaPqrs.creadoPor = "anonimo";
+        NuevaPqrs.anonimo = data.anonimo || true;
+    }
+
+
     return await CreatePqrs(NuevaPqrs);
     };
 

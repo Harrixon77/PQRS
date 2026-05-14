@@ -12,29 +12,29 @@ export const authMiddleware = (
 
         const authHeader = req.headers.authorization;
 
-        if(!authHeader || !authHeader.startsWith('Bearer')){
-            return res.status(401).json({
-                message: 'No se proporcionó un token de autenticación'
-            })
-        }
+        if(!authHeader || !authHeader.startsWith('Bearer ')){
+            req.user = null;
+            return next();
+            }
 
         const token = authHeader.split(' ')[1];
-        if(!token){
-            return res.status(401).json({
-                message: 'No se proporcionó un token de autenticación'
-            })
-        }
+            if (!token) {
+                req.user = null;
+                return next();
+            }
 
-            const payload = VerifyToken(token);
 
+        const payload = VerifyToken(token);
         req.user = payload;
-
         next();
+
+
+        
+        }catch (error) {
+    req.user = null;
+    next();
+
     
             
-    } catch (error) {
-     return res.status(401).json({
-            message: 'Token de autenticación inválido',
-     });
-    }
-};
+    } 
+     }

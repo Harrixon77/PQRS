@@ -11,8 +11,8 @@ private collection(){
 
 }
 
-async findByEmail(email: string): Promise<User | null>{
-    return this.collection().findOne({email});
+async findBycorreoInstitucional(correoInstitucional: string): Promise<User | null>{
+    return this.collection().findOne({correoInstitucional});
 }
 async create(user: User): Promise<User> {
     const result = await this.collection().insertOne(user);
