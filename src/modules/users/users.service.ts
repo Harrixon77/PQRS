@@ -14,4 +14,20 @@ export class UsersService {
 async findallUsers(){
     return this.repository.findall();
 }
+
+async update(id: string, data: any) {
+    const user = await this.repository.update(id, data);
+    if (!user) {
+        throw new Error('Usuario no encontrado para actualizar');
+    }
+    return user;
+}
+
+async delete(id: string) {
+    const eliminado = await this.repository.delete(id);
+    if (!eliminado) {
+        throw new Error('No se pudo eliminar: Usuario no encontrado');
+    }
+    return { message: "Usuario eliminado exitosamente" };
+}
 }
